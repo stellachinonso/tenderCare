@@ -9,18 +9,18 @@ const pool = mySql.createPool({
 });
 function checkConnection() {
   return new Promise((resolve, reject) => {
-    pool.connectDB((err, connection) => {
+    pool.connectDB((err, connect) => {
       if (err) {
         reject(err);
       } else {
-        resolve(connection);
+        resolve(connect);
       }
     });
   });
 }
-function queryValues(connect, sqlQuery, values) {
+function queryValues(connection, sqlQuery, values) {
   return new Promise((resolve, reject) => {
-    connect.query(sqlQuery, values, (err, result) => {
+    connection.query(sqlQuery, values, (err, result) => {
       if (err) {
         reject(err);
       } else {
