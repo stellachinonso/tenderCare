@@ -1,5 +1,4 @@
-const { promises } = require("fs");
-const mySql = require("mysql");
+const mySql = require("mysql2");
 const pool = mySql.createPool({
   connectionLimit: 10,
   host: "localhost",
@@ -7,9 +6,10 @@ const pool = mySql.createPool({
   user: "root",
   database: "tenderCare",
 });
+
 function checkConnection() {
   return new Promise((resolve, reject) => {
-    pool.connectDB((err, connect) => {
+    pool.getConnection((err, connect) => {
       if (err) {
         reject(err);
       } else {
@@ -30,6 +30,8 @@ function queryValues(connection, sqlQuery, values) {
   });
 }
 
-const userSignup = "insert into user_database(fullName,email,password)values(?,?,?)"
+const userSignup = "insert into users_data(fullName,email,password)values(?,?,?)"
+const userLogin = "select * from users_data where email = ?";
+const userResetPassword = "update users_data set password = ? where email = ?"
 
-module.exports = {checkConnection, queryValues, userSignup}
+module.exports = { checkConnection, queryValues, userSignup, userLogin,userResetPassword }
