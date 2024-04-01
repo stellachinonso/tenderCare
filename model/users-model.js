@@ -33,5 +33,6 @@ function queryValues(connection, sqlQuery, values) {
 const userSignup = "insert into users_data(fullName,email,password)values(?,?,?)"
 const userLogin = "select * from users_data where email = ?";
 const userResetPassword = "update users_data set password = ? where email = ?"
+const childData = "insert into Childs_BioData(fullname,gender,dob,userEmail)values(?,?,?,?)"
 
-module.exports = { checkConnection, queryValues, userSignup, userLogin,userResetPassword }
+module.exports = { checkConnection, queryValues, userSignup, userLogin,userResetPassword,childData }
