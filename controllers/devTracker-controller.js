@@ -5,31 +5,34 @@ const { checkConnection, queryValues } = require("../model/users-model");
 
 let userEmail = null;
 let dob = null;
+let fullname = null;
 let initialPromptSent = false;
 
 const devTracker2 = async (req, res) => {
   try {
     // Check if userEmail and dob are not set
-    if (!userEmail && !dob) {
+    if (!userEmail && !fullname && !dob) {
       // Set userEmail and dob from req.body
       userEmail = req.body.userEmail;
+      fullname = req.body.fullname;
       dob = req.body.dob;
 
       const connection = await checkConnection();
       const childData = await queryValues(
         connection,
-        "SELECT * FROM childs_BioData WHERE userEmail = ? AND dob = ?",
-        [userEmail, dob]
+        "SELECT * FROM childs_BioData WHERE userEmail = ? AND fullname = ? AND dob = ?",
+        [userEmail, fullname, dob]
       );
 
       if (childData.length === 0) {
         // If no child data found, send an appropriate response
         return res
           .status(404)
-          .send("No child found for the provided email and date of birth.");
+          .send(
+            "No child found for the provided email, fullname and date of birth."
+          );
       }
       const child = childData[0];
-
       // Calculate child's age in weeks
       const childsDOB = new Date(child.dob);
       const currentDate = new Date();
@@ -42,21 +45,15 @@ const devTracker2 = async (req, res) => {
        I want you to calculate my child's age based on the following conditions: "If my child's age is  more than 52 weeks, calculate my child's age in "years"
        BUT if my child's age is less than 52 weeks BUT more than 4 weeks old, calculate my child's age  in "months".
        Please do not include the details of the calculation in your response, just give the child's by fulfilling the conditions stated.
-       Then Give me the developmental milestones of my child's age? End your statement with "Remember that every child develops at their own pace.
-       Do you have any other concerns about your child's development`;
-
-      // console.log("Initial Prompt:", initialPrompt); // Log initial prompt
+       Then Give me the developmental milestones of my child's age in details? End your statement with "Remember that every child develops at their own pace.
+       Do you have any other concerns about your ${child.fullname} development`;
 
       // Send the initial prompt to OpenAI
       const openai = new OpenAI({ apiKey: process.env.API_KEY });
       const initialResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: initialPrompt }],
-        temperature: 1,
         max_tokens: 255,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
       });
 
       const initialResponseData = initialResponse.choices[0].message.content;
@@ -71,7 +68,7 @@ const devTracker2 = async (req, res) => {
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: userMessage }],
         temperature: 1,
-        max_tokens: 300,
+        max_tokens: 255,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
@@ -87,3 +84,4 @@ const devTracker2 = async (req, res) => {
 };
 
 module.exports = { devTracker2 };
+
