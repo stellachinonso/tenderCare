@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
-const saltRounds = bcrypt.genSaltSync(10);
+// const saltRounds = bcrypt.genSaltSync(10);
+const saltRounds = 10;
 const {
   checkConnection,
   queryValues,
@@ -16,6 +17,10 @@ const signup = async (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, saltRounds),
   };
+if (!user) {
+  return res.status(400).json({ message: "Missing required fields" });
+}
+
   const connection = await checkConnection();
   try {
     const result = await queryValues(connection, userSignup, [
@@ -24,7 +29,9 @@ const signup = async (req, res) => {
       user.password,
     ]);
     const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
-    res.status(201).json({ mesaage: "User created Successfully", result, token });
+    res
+      .status(201)
+      .json({ mesaage: "User created Successfully", result, token });
   } catch (err) {
     res.satus(400).json({ message: "invalid", err });
     console.log(err);
