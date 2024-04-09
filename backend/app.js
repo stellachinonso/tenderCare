@@ -7,7 +7,7 @@ const { userRouter } = require("./routes/user-route");
 const { devRouter } = require("./routes/devTracker-route");
 const dotenv = require("dotenv");
 dotenv.config();
-const PORT = process.env.PORT;
+const PORT = 4000;
 
 app.use(cors());
 app.use(bodyParser.json());
