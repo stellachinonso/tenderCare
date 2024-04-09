@@ -17,9 +17,9 @@ const signup = async (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, saltRounds),
   };
-if (!user) {
-  return res.status(400).json({ message: "Missing required fields" });
-}
+  if (!user) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
 
   const connection = await checkConnection();
   try {
@@ -33,7 +33,7 @@ if (!user) {
       .status(201)
       .json({ mesaage: "User created Successfully", result, token });
   } catch (err) {
-    res.satus(400).json({ message: "invalid", err });
+    res.satus(400).json({ err, message: "invalid" });
     console.log(err);
   }
 };

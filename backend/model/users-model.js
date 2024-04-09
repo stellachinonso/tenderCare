@@ -1,14 +1,10 @@
 const mySql = require("mysql2");
 const pool = mySql.createPool({
   connectionLimit: 10,
-  host: "localhost",
-  password: "1234",
-  user: "root",
-  database: "tenderCare",
-  // host: "bxulw3n1e9xzmhpcbprd-mysql.services.clever-cloud.com",
-  // password: "g8cixcVAO6ys3XTs5QDZ",
-  // user: "ub3a6izupuydpzit",
-  // database: "bxulw3n1e9xzmhpcbprd",
+  host: "bxulw3n1e9xzmhpcbprd-mysql.services.clever-cloud.com",
+  password: "g8cixcVAO6ys3XTs5QDZ",
+  user: "ub3a6izupuydpzit",
+  database: "bxulw3n1e9xzmhpcbprd",
 });
 
 function checkConnection() {
@@ -35,7 +31,7 @@ function queryValues(connection, sqlQuery, values) {
 }
 
 const userSignup =
-  "insert into users_data(fullName,email,password)values(?,?,?)";
+  "insert into users_data(fullname,email,password)values(?,?,?)";
 const userLogin = "select * from users_data where email = ?";
 const userResetPassword = "update users_data set password = ? where email = ?";
 const createChildData =
