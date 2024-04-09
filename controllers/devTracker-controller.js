@@ -8,7 +8,7 @@ let dob = null;
 let fullname = null;
 let initialPromptSent = false;
 
-const devTracker2 = async (req, res) => {
+const devTracker = async (req, res) => {
   try {
     // Check if userEmail and dob are not set
     if (!userEmail && !fullname && !dob) {
@@ -83,5 +83,5 @@ const devTracker2 = async (req, res) => {
   }
 };
 
-module.exports = { devTracker2 };
+module.exports = { devTracker };
 
