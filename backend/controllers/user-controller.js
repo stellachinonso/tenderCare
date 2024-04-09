@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const dotenv = require("dotenv");
-dotenv.config();
 // const saltRounds = bcrypt.genSaltSync(10);
 const saltRounds = 10;
 const {
@@ -10,6 +8,7 @@ const {
   userSignup,
   userLogin,
 } = require("../model/users-model");
+const SECRET_KEY = "tenderCare";
 
 const signup = async (req, res) => {
   const user = {
@@ -28,7 +27,7 @@ const signup = async (req, res) => {
       user.email,
       user.password,
     ]);
-    const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
+    const token = jwt.sign({ email: user.email }, SECRET_KEY);
     res
       .status(201)
       .json({ mesaage: "User created Successfully", result, token });
@@ -48,7 +47,7 @@ const login = async (req, res) => {
     const result = await queryValues(connection, userLogin, [user.email]);
     const comparePassword = bcrypt.compare(user.password, result[0].password);
     if (comparePassword) {
-      const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
+      const token = jwt.sign({ email: user.email }, SECRET_KEY);
       res.status(200).json({ message: "User login successful", token });
       console.log(token);
     } else {
